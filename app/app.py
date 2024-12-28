@@ -27,19 +27,19 @@ def handle_team_join(event, say):
     ).choices[0].message.content
     say(welcome)
 
-# debug feature
-@app.message("hahahahaha test")
-def handle_test_command(event, say):
-    if event["channel"] != os.environ.get("THE_CHANNEL_ID"):
-        return
-    user_id = "U07AD6RKUBW"
-    user_info = app.client.users_info(user=user_id)
-    welcome = llm.create(
-        model="gpt-4o-mini-2024-07-18",
-        messages=[llm.systemp(llm.get("prompts/welcome.md").format(info=user_info.data["user"], datetime=datetime.datetime.now().isoformat()))],
-        max_tokens=300
-    ).choices[0].message.content
-    say(welcome)
+# # debug feature
+# @app.message("hahahahaha test")
+# def handle_test_command(event, say):
+#     if event["channel"] != os.environ.get("THE_CHANNEL_ID"):
+#         return
+#     user_id = "U07AD6RKUBW"
+#     user_info = app.client.users_info(user=user_id)
+#     welcome = llm.create(
+#         model="gpt-4o-mini-2024-07-18",
+#         messages=[llm.systemp(llm.get("prompts/welcome.md").format(info=user_info.data["user"], datetime=datetime.datetime.now().isoformat()))],
+#         max_tokens=300
+#     ).choices[0].message.content
+#     say(welcome)
 
 
 def main():
