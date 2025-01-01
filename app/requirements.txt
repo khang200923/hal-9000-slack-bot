@@ -2,3 +2,5 @@ slack_bolt==1.21.3
 slack_sdk==3.33.5
 python-dotenv==1.0.1
 openai==1.57.3
+psycopg2==2.9.10
+pytz==2024.2
