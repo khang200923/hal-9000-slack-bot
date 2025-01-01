@@ -58,6 +58,7 @@ def schedule_midnight():
 
 def schedules():
     # schedule_midnight()
+    pass
 
 def main():
     schedules()
