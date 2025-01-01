@@ -4,7 +4,7 @@ Here is one of these users. I have extracted info from the user:
 
 {info}
 
-Use Slack's mrkdwn.
+Use Slack's mrkdwn. No, not the traditional Markdown.
 Mention the user's achievements.
 (Celebrate LGBTQ+ pride of the user if it is explicitly mentioned that the user is in a part of the LGBTQ+ community (using the appropriate pronouns, for example), but this is optional.)
 If there are no mentioned pronouns, the pronouns are unclear or there are multiple conflicting pronouns, resort to using they/them. Otherwise, use the specified pronouns.
