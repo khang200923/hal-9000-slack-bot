@@ -36,4 +36,5 @@ def schedule_midnight(app: App):
 
 def feature(app: App):
     schedule_midnight(app)
-    app.logger.info("Midnight feature enabled.")
+
+    print("Midnight feature enabled.")

@@ -6,7 +6,8 @@ import llm
 
 load_dotenv('..')
 
-def handle_team_join_meta(app: App):
+def team_join(app: App):
+    # @app.event("member_joined_channel")
     def handle_team_join(event, say):
         if event["channel"] != os.environ.get("THE_CHANNEL_ID"):
             return
@@ -21,4 +22,6 @@ def handle_team_join_meta(app: App):
     return handle_team_join
 
 def feature(app: App):
-    app.event("member_joined_channel")(handle_team_join_meta(app))
+    app.event("member_joined_channel")(team_join(app))
+
+    app.logger.info("Welcome feature enabled.")

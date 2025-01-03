@@ -8,14 +8,14 @@ import psycopg2
 import features
 
 load_dotenv()
-pytz.timezone('Asia/Bangkok')
 app = App()
 db: psycopg2.extensions.connection = None
 cursor: psycopg2.extensions.cursor = None
 
 def core():
-    # features.midnight.feature(app)
     features.welcome.feature(app)
+    # features.todos.feature(app, db, cursor)
+    # features.midnight.feature(app)
     handler = SocketModeHandler(app, app_token=os.environ.get("SLACK_APP_TOKEN"))
     handler.start()
 
