@@ -4,3 +4,4 @@ python-dotenv==1.0.1
 openai==1.57.3
 psycopg2==2.9.10
 pytz==2024.2
+schedule==1.2.2
