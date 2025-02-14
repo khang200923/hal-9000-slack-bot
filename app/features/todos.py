@@ -5,7 +5,6 @@ import threading
 import time
 from dotenv import load_dotenv
 import schedule
-import llm
 import pytz
 import psycopg2
 from slack_bolt import App
@@ -28,46 +27,20 @@ def db_init(db: psycopg2.extensions.connection, cursor: psycopg2.extensions.curs
 
 def to_time(value: str) -> datetime:
     value = value.strip()
-    if value.lower().startswith("in-sec"):
-        return datetime.now(tz) + timedelta(seconds=int(value[6:])+5)
-    if value.lower().startswith("in-min"):
-        return datetime.now(tz) + timedelta(minutes=int(value[6:]), seconds=5)
-    if value.lower().startswith("in-hour"):
-        return datetime.now(tz) + timedelta(hours=int(value[7:]), seconds=5)
-    if value.lower().startswith("in-day"):
-        return datetime.now(tz) + timedelta(days=int(value[6:]), seconds=5)
+    if value.lower().startswith("secs"):
+        return datetime.now(tz) + timedelta(seconds=int(value[4:])+5)
+    if value.lower().startswith("mins"):
+        return datetime.now(tz) + timedelta(minutes=int(value[4:]), seconds=5)
+    if value.lower().startswith("hours"):
+        return datetime.now(tz) + timedelta(hours=int(value[5:]), seconds=5)
+    if value.lower().startswith("days"):
+        return datetime.now(tz) + timedelta(days=int(value[4:]), seconds=5)
     if value.lower().startswith("in"):
         return tz.localize(datetime.fromisoformat(value[2:].strip()))
     if value.lower().startswith("at"):
         hour, minute = value[2:].split(":")
         return datetime.now(tz).replace(hour=int(hour), minute=int(minute))
     return tz.localize(datetime.fromisoformat(value.strip()))
-
-def mention(app: App, db: psycopg2.extensions.connection, cursor: psycopg2.extensions.cursor):
-    # @app.event("app_mention")
-    def handle_mention(event, say):
-        print("debug handle_mention", event["ts"])
-
-        # I think this event subscription has a bug here so I'm adding this
-        cursor.execute("SELECT 1 FROM todos WHERE ts = %s", (event["ts"],))
-        if cursor.fetchone() is not None:
-            return
-
-        text = event["text"]
-        if "todo:add" in text.lower():
-            content, end_time = re.search("todo:add[^]+", text).group()[8:].split(" / ")
-            end_time = to_time(end_time)
-            todo_add(app, db, cursor, content, datetime.now(), event["ts"])
-            say("Todo successfully added", thread_ts=event["ts"])
-        if "todo:ls" in text.lower():
-            cursor.execute("SELECT (text, creation_time, end_time, done) FROM todos")
-            todos = cursor.fetchall()
-            say("Here are your unfinished todos:")
-            for todo in todos:
-                if todo[3]:
-                    continue
-                say(f"{todo[0]} (created at {todo[1]}, due at {todo[2]})")
-    return handle_mention
 
 def todo_add(app: App, db: psycopg2.extensions.connection, cursor: psycopg2.extensions.cursor, text: str, end_time: datetime, ts: str):
     cursor.execute("INSERT INTO todos (text, end_time, ts) VALUES (%s, %s, %s)", (text, end_time, ts))
@@ -106,6 +79,34 @@ def check_todos(app: App, db: psycopg2.extensions.connection, cursor: psycopg2.e
 
     scheduler_thread = threading.Thread(target=run_scheduler)
     scheduler_thread.start()
+
+def mention(app: App, db: psycopg2.extensions.connection, cursor: psycopg2.extensions.cursor):
+    # @app.event("app_mention")
+    def handle_mention(ack, event, say):
+        ack()
+        print("debug handle_mention", event["ts"])
+
+        # I think this event subscription has a bug here so I'm adding this
+        cursor.execute("SELECT 1 FROM todos WHERE ts = %s", (event["ts"],))
+        if cursor.fetchone() is not None:
+            return
+
+        text = event["text"]
+        if "todoadd" in text.lower():
+            print(text)
+            content, end_time = re.search("todoadd.+", text).group()[7:].strip().split(" / ")
+            end_time = to_time(end_time)
+            todo_add(app, db, cursor, content, datetime.now(), event["ts"])
+            say("Todo successfully added", thread_ts=event["ts"])
+        if "todols" in text.lower():
+            cursor.execute("SELECT (text, creation_time, end_time, done) FROM todos")
+            todos = cursor.fetchall()
+            say("Here are your unfinished todos:", thread_ts=event["ts"])
+            for todo in todos:
+                if todo[3]:
+                    continue
+                say(f"{todo[0]} (created at {todo[1]}, due at {todo[2]})")
+    return handle_mention
 
 def feature(app: App, db: psycopg2.extensions.connection, cursor: psycopg2.extensions.cursor):
     db_init(db, cursor)
