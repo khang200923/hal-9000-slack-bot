@@ -15,6 +15,7 @@ def chat(app: App):
         if command["user_id"] != os.getenv("THE_CREATOR_ID"):
             ack()
             say(f"<@{command['user_id']}> is not authorized to use /halchat. Yo <@{os.getenv('THE_CREATOR_ID')}> c'mere.")
+            return
         res = llm.create(
             model="gpt-4o-mini-2024-07-18",
             messages=[llm.userp(command["text"])],
