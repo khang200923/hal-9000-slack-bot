@@ -23,3 +23,5 @@ def chat(app: App):
 
 def feature(app: App):
     app.command("/halchat")(chat(app))
+
+    print("ChatGPT feature enabled.")

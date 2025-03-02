@@ -27,4 +27,4 @@ def team_join(app: App):
 def feature(app: App):
     app.event("member_joined_channel")(team_join(app))
 
-    app.logger.info("Welcome feature enabled.")
+    print("Welcome feature enabled.")
