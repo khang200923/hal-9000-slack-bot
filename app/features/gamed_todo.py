@@ -1,12 +1,6 @@
 import json
 import os
-import re
-import threading
-import ast
-import time
 from dotenv import load_dotenv
-import schedule
-import llm
 from slack_bolt import App
 
 load_dotenv('..')
@@ -115,7 +109,7 @@ def display_blocks_from_metadata(metadata):
     return blocks
 
 # @app.command("/gamed-todo")
-def handle_gamed_todo(ack, command, say):
+def handle_gamed_todo(ack, command, say, client):
     ack()
     if command["user_id"] != os.getenv("THE_CREATOR_ID"):
         say(f"<@{command['user_id']}> is not authorized to use /gamed_todo. Yo <@{os.getenv('THE_CREATOR_ID')}> c'mere.")
@@ -129,6 +123,8 @@ def handle_gamed_todo(ack, command, say):
         blocks=display_blocks_from_metadata(metadata),
         text=f"TODO list: {title}"
     )
+
+    print("debug", client.conversations_history(channel=command["channel_id"], limit=1, include_all_metadata=True)["messages"][0])
 
 # @app.action(gtodo_new_todo)
 def handle_new_todo(ack, body, client):
@@ -180,14 +176,13 @@ def handle_new_todo(ack, body, client):
 
 # @app.view("gtodo_new_todo")
 def handle_new_todo_view(ack, body, client):
-    print("debug")
     ack()
     view_metadata = body["view"]["private_metadata"]
     view_metadata = json.loads(view_metadata)
     channel_id = view_metadata["channel_id"]
     message_ts = view_metadata["message_ts"]
     desc = body["view"]["state"]["values"]["desc"]["desc"]["value"]
-    metadata = client.conversations_history(channel=channel_id, latest=message_ts, limit=1, include_all_metadata=True)["messages"][0]["metadata"]["event_payload"]
+    metadata = client.conversations_history(channel=channel_id, oldest=message_ts, inclusive=True, limit=1, include_all_metadata=True)["messages"][0]["metadata"]["event_payload"]
     todos = metadata["todos"]
     todos.append([desc, False])
     metadata["todos"] = todos
@@ -249,7 +244,6 @@ def handle_undone_list(ack, body, client):
             text=f"<@{body['user']['id']}> is not authorized to do gtodo_undone_list. Yo <@{os.getenv('THE_CREATOR_ID')}> c'mere."
         )
         return
-    print(body, body["message"])
     metadata = body["message"]["metadata"]["event_payload"]
     metadata["done"] = False
     client.chat_update(
