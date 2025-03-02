@@ -6,7 +6,6 @@ import pytz
 import psycopg2
 
 import features
-import features.chatgpt
 
 load_dotenv()
 app = App()
@@ -15,8 +14,7 @@ cursor: psycopg2.extensions.cursor = None
 
 def core():
     features.welcome.feature(app)
-    # features.todos.feature(app, db, cursor)
-    # features.midnight.feature(app)
+    features.gamed_todo.feature(app)
     features.chatgpt.feature(app)
     handler = SocketModeHandler(app, app_token=os.environ.get("SLACK_APP_TOKEN"))
     handler.start()
