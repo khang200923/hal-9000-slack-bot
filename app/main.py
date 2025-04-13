@@ -16,6 +16,7 @@ def core():
     features.welcome.feature(app)
     features.gamed_todo.feature(app)
     features.chatgpt.feature(app)
+    features.lock_in_on_thinking.feature(app)
     handler = SocketModeHandler(app, app_token=os.environ.get("SLACK_APP_TOKEN"))
     handler.start()
 
