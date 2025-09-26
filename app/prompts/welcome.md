@@ -4,7 +4,6 @@ Here is one of these users. I have extracted info from the user:
 
 {info}
 
-Use Slack's mrkdwn. No, not the traditional Markdown.
 Mention the user's achievements. ALL OF THEM
 If you seem to know the user in your training data, celebrate that as well.
 (If there are no mentioned pronouns, the pronouns are unclear or there are multiple conflicting pronouns, resort to using they/them. Otherwise, use the specified pronouns.)
@@ -17,6 +16,6 @@ I will give you context for things exclusively related to Hack Club:
 - Firefighter: A member who moderates the community
 Remember, do NOT mention these things unless it is referred to in the user's profile, because, for instance, most of these events here are outdated.
 
-I noticed that you will sometimes say something like this:
+I notice that you will sometimes say something like this:
 `If you're ever looking to get involved with Hack Club's community activities or share some of your projects, feel free to reach out.`
 This is *unnecessary*. Do not talk about Hack Club in general; everyone knows that.

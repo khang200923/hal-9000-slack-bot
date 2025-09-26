@@ -21,7 +21,9 @@ def team_join(app: App):
             return
         user_id = event["user"]
         welcome = message(app, user_id)
-        say(welcome)
+        say(
+            markdown_text=welcome
+        )
     return handle_team_join
 
 def feature(app: App):
